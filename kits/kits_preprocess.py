@@ -198,8 +198,8 @@ def reset_trainerName_these(experiments=('nnUNetTrainerNewCandidate23_FabiansPre
 
 
 if __name__ == "__main__":
-    base = "~/kits19/data"
-    out = "~/nnunet_data/nnUNet_raw_data/Task048_KiTS_clean"
+    base = "/gpfs/space/home/dzvenymy/kits19/data"
+    out = "/gpfs/space/home/dzvenymy/nnunet_data/nnUNet_raw_data/Task048_KiTS_clean"
     cases = subdirs(base, join=False)
 
     maybe_mkdir_p(out)
@@ -230,12 +230,12 @@ if __name__ == "__main__":
         "1": "Kidney",
         "2": "Tumor"
     }
-    json_dict['numTraining'] = len(cases)
+    json_dict['numTraining'] = 210
     json_dict['numTest'] = 0
     json_dict['training'] = [{'image': "./imagesTr/%s.nii.gz" % i, "label": "./labelsTr/%s.nii.gz" % i} for i in
-                             cases]
+                             cases[:210]]
     json_dict['test'] = []
 
-    save_json(json_dict, os.path.join(out, "dataset.json"))
 
+    save_json(json_dict, os.path.join(out, "dataset.json"))
 
