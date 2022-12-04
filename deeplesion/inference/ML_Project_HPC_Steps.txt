@@ -1,0 +1,49 @@
+# setting up environment in jupyter
+python3 -m venv .venv
+source .venv/bin/activate
+nvcc --version
+pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu114
+pip install matplotlib
+pip install simpleitk
+python -c 'import torch;print(torch.backends.cudnn.version())'
+python -c 'import torch;print(torch.__version__)'
+python -m pip install ipykernel
+python -m ipykernel install --user --name=nnunet_env
+
+# setting up folder structure
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_preprocessed
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_trained_models
+
+# set up actual dataset folder
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base/Task048_KiTS_clean
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base/Task048_KiTS_clean/images_test
+mkdir /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base/Task048_KiTS_clean/predicts_test
+
+# setting up necessary environment variables
+export nnUNet_raw_data_base="/gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base"
+export nnUNet_preprocessed="/gpfs/space/home/fordui/ml_project/nnUNet_preprocessed"
+export RESULTS_FOLDER="/gpfs/space/home/fordui/ml_project/nnUNet_trained_models"
+
+# install nnunet package
+pip install nnunet
+
+# check whether there are any notes on env variables not defined
+nnUNet_download_pretrained_model -h
+
+# list pretrained models
+nnUNet_print_available_pretrained_models
+
+# download weights for Task048_KiTS_clean
+nnUNet_download_pretrained_model Task048_KiTS_clean
+
+# permute axis of sample
+
+# copy file to training folder and rename it
+cp deeplesion_sample_permutedaxis.nii.gz nnUNet_raw_data_base/Task048_KiTS_clean/images_test/KITS_001_0000.nii.gz
+
+# copying deep lesion file (just for naming)
+cp deep_lesion_scans/000016_02_01_303-388_processed.nii.gz nnUNet_raw_data_base/Task048_KiTS_clean/images_test/KITS_502_0000.nii.gz
+
+# try to inference
+nnUNet_predict -i /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base/Task048_KiTS_clean/images_test -o /gpfs/space/home/fordui/ml_project/nnUNet_raw_data_base/Task048_KiTS_clean/predicts_test -t 48 -m 3d_fullres
